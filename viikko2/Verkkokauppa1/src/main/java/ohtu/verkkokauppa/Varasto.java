@@ -2,7 +2,7 @@ package ohtu.verkkokauppa;
 
 import java.util.*;
 
-public class Varasto {
+public class Varasto implements VarastoRajapinta {
 
     private static Varasto instanssi;
 
