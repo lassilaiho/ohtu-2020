@@ -34,10 +34,11 @@ public class App {
 
             if (command.equals("new")) {
                 String[] usernameAndPasword = ask();
-                if (auth.createUser(usernameAndPasword[0], usernameAndPasword[1])) {
+                var error = auth.createUser(usernameAndPasword[0], usernameAndPasword[1]);
+                if (error == null) {
                     io.print("new user registered");
                 } else {
-                    io.print("new user not registered");
+                    io.print(error);
                 }
 
             } else if (command.equals("login")) {
@@ -58,13 +59,13 @@ public class App {
         AuthenticationService auth = new AuthenticationService(dao);
         new App(io, auth).run();
     }
-    
+
     // testejä debugatessa saattaa olla hyödyllistä testata ohjelman ajamista
     // samoin kuin testi tekee, eli injektoimalla käyttäjän syötteen StubIO:n avulla
     //
-    // UserDao dao = new InMemoryUserDao();  
-    // StubIO io = new StubIO(Arrays.asList("new", "eero", "sala1nen"));   
-    //  AuthenticationService auth = new AuthenticationService(dao);
+    // UserDao dao = new InMemoryUserDao();
+    // StubIO io = new StubIO(Arrays.asList("new", "eero", "sala1nen"));
+    // AuthenticationService auth = new AuthenticationService(dao);
     // new App(io, auth).run();
     // System.out.println(io.getPrints());
 }

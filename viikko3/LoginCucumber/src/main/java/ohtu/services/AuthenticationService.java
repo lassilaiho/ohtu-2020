@@ -1,8 +1,6 @@
 package ohtu.services;
 
 import ohtu.domain.User;
-import java.util.ArrayList;
-import java.util.List;
 import ohtu.data_access.UserDao;
 
 public class AuthenticationService {
@@ -15,8 +13,7 @@ public class AuthenticationService {
 
     public boolean logIn(String username, String password) {
         for (User user : userDao.listAll()) {
-            if (user.getUsername().equals(username)
-                    && user.getPassword().equals(password)) {
+            if (user.getUsername().equals(username) && user.getPassword().equals(password)) {
                 return true;
             }
         }
@@ -24,23 +21,33 @@ public class AuthenticationService {
         return false;
     }
 
-    public boolean createUser(String username, String password) {
+    public String createUser(String username, String password) {
         if (userDao.findByName(username) != null) {
-            return false;
+            return "username is already taken";
         }
 
-        if (invalid(username, password)) {
-            return false;
+        var error = invalid(username, password);
+        if (error != null) {
+            return error;
         }
 
         userDao.add(new User(username, password));
 
-        return true;
+        return null;
     }
 
-    private boolean invalid(String username, String password) {
-        // validity check of username and password
-
-        return false;
+    private String invalid(String username, String password) {
+        if (username.length() < 3) {
+            return "username must contain at least 3 characters";
+        }
+        if (password.length() < 8) {
+            return "password must contain at least 8 characters";
+        }
+        for (var i = 0; i < password.length(); i++) {
+            if (!Character.isLetter(password.charAt(i))) {
+                return null;
+            }
+        }
+        return "password must not consist of letters only";
     }
 }
