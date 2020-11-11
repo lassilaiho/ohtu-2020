@@ -1,11 +1,14 @@
 package ohtu;
 
 public class TennisGame {
-    
-    private int m_score1 = 0;
-    private int m_score2 = 0;
+
+    private int player1Score = 0;
+    private int player2Score = 0;
     private String player1Name;
     private String player2Name;
+
+    private static final int endGameLimit = 4;
+    private static final int winMargin = 2;
 
     public TennisGame(String player1Name, String player2Name) {
         this.player1Name = player1Name;
@@ -13,68 +16,58 @@ public class TennisGame {
     }
 
     public void wonPoint(String playerName) {
-        if (playerName == "player1")
-            m_score1 += 1;
-        else
-            m_score2 += 1;
+        if (playerName.equals(player1Name)) {
+            player1Score++;
+        } else {
+            player2Score++;
+        }
     }
 
     public String getScore() {
-        String score = "";
-        int tempScore=0;
-        if (m_score1==m_score2)
-        {
-            switch (m_score1)
-            {
-                case 0:
-                        score = "Love-All";
-                    break;
-                case 1:
-                        score = "Fifteen-All";
-                    break;
-                case 2:
-                        score = "Thirty-All";
-                    break;
-                case 3:
-                        score = "Forty-All";
-                    break;
-                default:
-                        score = "Deuce";
-                    break;
-                
-            }
+        if (player1Score == player2Score) {
+            return getEqualScores();
+        } else if (player1Score >= endGameLimit || player2Score >= endGameLimit) {
+            return getEndGameScores();
         }
-        else if (m_score1>=4 || m_score2>=4)
-        {
-            int minusResult = m_score1-m_score2;
-            if (minusResult==1) score ="Advantage player1";
-            else if (minusResult ==-1) score ="Advantage player2";
-            else if (minusResult>=2) score = "Win for player1";
-            else score ="Win for player2";
-        }
-        else
-        {
-            for (int i=1; i<3; i++)
-            {
-                if (i==1) tempScore = m_score1;
-                else { score+="-"; tempScore = m_score2;}
-                switch(tempScore)
-                {
-                    case 0:
-                        score+="Love";
-                        break;
-                    case 1:
-                        score+="Fifteen";
-                        break;
-                    case 2:
-                        score+="Thirty";
-                        break;
-                    case 3:
-                        score+="Forty";
-                        break;
-                }
-            }
-        }
-        return score;
+        return getMidGameScores();
     }
+
+    private String getEqualScores() {
+        var word = getScoreWord(player1Score);
+        if (player1Score < endGameLimit) {
+            word += "-All";
+        }
+        return word;
+    }
+
+    private String getMidGameScores() {
+        return getScoreWord(player1Score) + "-" + getScoreWord(player2Score);
+    }
+
+    private String getEndGameScores() {
+        var winningPlayer = player1Name;
+        if (player2Score > player1Score) {
+            winningPlayer = player2Name;
+        }
+        if (Math.abs(player1Score - player2Score) < winMargin) {
+            return "Advantage " + winningPlayer;
+        }
+        return "Win for " + winningPlayer;
+    }
+
+    private String getScoreWord(int score) {
+        switch (score) {
+            case 0:
+                return "Love";
+            case 1:
+                return "Fifteen";
+            case 2:
+                return "Thirty";
+            case 3:
+                return "Forty";
+            default:
+                return "Deuce";
+        }
+    }
+
 }
