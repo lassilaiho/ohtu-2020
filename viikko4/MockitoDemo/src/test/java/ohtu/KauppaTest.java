@@ -57,7 +57,7 @@ public class KauppaTest {
         kauppa.maksa("1111");
 
         // nyt vaadimme myös toisen parametrin arvon olevan oikea
-        verify(mockPankki).maksa(eq("1111"), eq(10), anyInt());
+        verify(mockPankki).maksa(eq("1111"), eq(10), eq(54));
     }
 
     @Test
