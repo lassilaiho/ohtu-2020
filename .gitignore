@@ -3,3 +3,5 @@
 .settings
 bin
 .vscode
+.gradle/
+build/
