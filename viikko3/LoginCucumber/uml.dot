@@ -1,0 +1,17 @@
+digraph G {
+    node [shape=box]
+
+    "AuthenticationService"->"<<UserDao>>"
+    "AuthenticationService"->"User" [style=dashed]
+
+    "<<UserDao>>"->"User" [arrowhead=none, headlabel="*", taillabel="1"]
+
+    "InMemoryUserDao"->"<<UserDao>>" [style=dashed, arrowhead=empty]
+
+    "ConsoleIO"->"<<IO>>" [style=dashed, arrowhead=empty]
+
+    "StubIO"->"<<IO>>" [style=dashed, arrowhead=empty]
+
+    "App"->"<<IO>>"
+    "App"->"AuthenticationService"
+}
