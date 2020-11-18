@@ -11,6 +11,7 @@ public class Clear extends Command {
 
     @Override
     public void execute() {
+        saveAppState();
         app.nollaa();
         syncStateToUI();
     }

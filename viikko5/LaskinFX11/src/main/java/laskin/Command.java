@@ -9,6 +9,7 @@ public abstract class Command {
     protected Button clearButton;
     protected Button undoButton;
     protected Sovelluslogiikka app;
+    protected int previousResult;
 
     public Command(TextField resultField, TextField inputField, Button clearButton, Button undoButton,
             Sovelluslogiikka app) {
@@ -22,7 +23,8 @@ public abstract class Command {
     public abstract void execute();
 
     public void undo() {
-        System.out.println("undo pressed");
+        app.setTulos(previousResult);
+        syncStateToUI();
     }
 
     protected int parseInput() {
@@ -42,5 +44,9 @@ public abstract class Command {
             clearButton.disableProperty().set(false);
         }
         undoButton.disableProperty().set(false);
+    }
+
+    protected void saveAppState() {
+        previousResult = app.tulos();
     }
 }

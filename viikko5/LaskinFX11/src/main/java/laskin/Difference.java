@@ -11,6 +11,7 @@ public class Difference extends Command {
 
     @Override
     public void execute() {
+        saveAppState();
         app.miinus(parseInput());
         syncStateToUI();
     }
