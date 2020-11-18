@@ -1,59 +1,39 @@
 package laskin;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 
 public class Tapahtumankuuntelija implements EventHandler {
-    private TextField tuloskentta; 
-    private TextField syotekentta; 
-    private Button plus;
-    private Button miinus;
-    private Button nollaa;
     private Button undo;
-    private Sovelluslogiikka sovellus;
+    private Sovelluslogiikka app = new Sovelluslogiikka();
 
-    public Tapahtumankuuntelija(TextField tuloskentta, TextField syotekentta, Button plus, Button miinus, Button nollaa, Button undo) {
-        this.tuloskentta = tuloskentta;
-        this.syotekentta = syotekentta;
-        this.plus = plus;
-        this.miinus = miinus;
-        this.nollaa = nollaa;
-        this.undo = undo;
-        this.sovellus = new Sovelluslogiikka();
+    private Map<Button, Command> commands = new HashMap<Button, Command>();
+    private Command previousCommand;
+
+    public Tapahtumankuuntelija(TextField resultField, TextField inputField, Button plusButton, Button minusButton,
+            Button clearButton, Button undoButton) {
+        this.undo = undoButton;
+        commands.put(plusButton, new Sum(resultField, inputField, clearButton, undoButton, app));
+        commands.put(minusButton, new Difference(resultField, inputField, clearButton, undoButton, app));
+        commands.put(clearButton, new Clear(resultField, inputField, clearButton, undoButton, app));
     }
-    
+
     @Override
     public void handle(Event event) {
-        int arvo = 0;
- 
-        try {
-            arvo = Integer.parseInt(syotekentta.getText());
-        } catch (Exception e) {
-        }
- 
-        if (event.getTarget() == plus) {
-            sovellus.plus(arvo);
-        } else if (event.getTarget() == miinus) {
-            sovellus.miinus(arvo);
-        } else if (event.getTarget() == nollaa) {
-            sovellus.nollaa();
+        if (event.getTarget() == undo) {
+            if (previousCommand != null) {
+                previousCommand.undo();
+                previousCommand = null;
+            }
         } else {
-            System.out.println("undo pressed");
+            var command = commands.get((Button) event.getTarget());
+            command.execute();
+            previousCommand = command;
         }
-        
-        int laskunTulos = sovellus.tulos();
-        
-        syotekentta.setText("");
-        tuloskentta.setText("" + laskunTulos);
-        
-        if ( laskunTulos==0) {
-            nollaa.disableProperty().set(true);
-        } else {
-            nollaa.disableProperty().set(false);
-        }
-        undo.disableProperty().set(false);
     }
-
 }
