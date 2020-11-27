@@ -23,17 +23,15 @@ public class Main {
             new HasFewerThan(1, "goals"),
             new PlaysIn("NYR")
         ));
-        assert m1.toString().equals(m2.toString());
+        assertTrue(m1.toString().equals(m2.toString()));
 
-        assert stats.matches(new All()).size() == 964;
+        assertTrue(stats.matches(new All()).size() == 964);
 
-        System.out.println();
         printMatches(stats, new Or(
             new HasAtLeast(40, "goals"),
             new HasAtLeast(60, "assists")
         ));
 
-        System.out.println();
         printMatches(stats, new And(
             new HasAtLeast(50, "points"),
             new Or(
@@ -42,11 +40,36 @@ public class Main {
                 new PlaysIn("BOS")
             )
         ));
+
+        var query = new QueryBuilder();
+        assertTrue(stats.matches(query.build()).size() == 964);
+
+        m = query
+            .playsIn("NYR")
+            .hasAtLeast(5, "goals")
+            .hasFewerThan(10, "goals").build();
+        printMatches(stats, m);
+
+        m = query.oneOf(
+            query.playsIn("PHI")
+                .hasAtLeast(10, "assists")
+                .hasFewerThan(5, "goals").build(),
+            query.playsIn("EDM")
+                .hasAtLeast(40, "points").build()
+        ).build();
+        printMatches(stats, m);
     }
 
     private static void printMatches(Statistics stats, Matcher matcher){
         for (var player : stats.matches(matcher)) {
             System.out.println(player);
+        }
+        System.out.println();
+    }
+
+    private static void assertTrue(boolean b){
+        if (!b) {
+            throw new AssertionError();
         }
     }
 }
