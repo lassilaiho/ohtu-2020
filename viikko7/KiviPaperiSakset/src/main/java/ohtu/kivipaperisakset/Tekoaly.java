@@ -20,8 +20,4 @@ public class Tekoaly {
             return "s";
         }
     }
-
-    void asetaSiirto(String ekanSiirto) {
-        // ei tehdä mitään 
-    }
 }
